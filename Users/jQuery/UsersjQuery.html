@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <h1>PagerDuty Users CSV</h1> Subdomain:
+        <input type="text" name="subdomain">.pagerduty.com
+        <br> API token:
+        <input type="text" name="token">
+        <br>
+        <button type="button" onclick="exportToCSV()">Export</button>
+        <br>
+
+    </div>
+    <div>
+        <textarea name="CSVtextarea" id="CSVtextarea" style="width:90%;height:200px;"></textarea>
+         <br>
+        <button type="button" onclick="saveTextAsFile()">Download</button>
+    </div>
+    <script>
+        function exportToCSV() {
+            var settings = {
+                "url": "https://" + document.querySelector('[name="subdomain"]').value + ".pagerduty.com/api/v1/users",
+                "method": "GET",
+                "headers": {
+                    "accept": "application/json",
+                    "content-type": "application/json",
+                    "Authorization": "Token token=" + document.querySelector('[name="token"]').value 
+                }
+            };
+            
+            $.ajax(settings).done(function (response) {
+                document.getElementById("CSVtextarea").value = Papa.unparse(response.users);
+            });
+        }
+        
+        function saveTextAsFile() {
+            var textToWrite = document.getElementById("CSVtextarea").value
+            var textFileAsBlob = new Blob([textToWrite], {
+                type: 'text/plain'
+            });
+            var fileNameToSaveAs = "users.csv";
+
+            var downloadLink = document.createElement("a");
+            downloadLink.download = fileNameToSaveAs;
+            downloadLink.innerHTML = "Download File";
+            if (window.webkitURL != null) {
+                // Chrome allows the link to be clicked
+                // without actually adding it to the DOM.
+                downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+            } else {
+                // Firefox requires the link to be added to the DOM
+                // before it can be clicked.
+                downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+                downloadLink.onclick = destroyClickedElement;
+                downloadLink.style.display = "none";
+                document.body.appendChild(downloadLink);
+            }
+
+            downloadLink.click();
+        }
+    </script>
+</body>
+
+</html>
