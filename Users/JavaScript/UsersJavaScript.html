@@ -18,9 +18,9 @@
         <button type="button" onclick="saveTextAsFile()">Download</button>
     </div>
     <script>
+        
+        // Handle onlclick and get Users 
         function exportToCSV() {
-
-            var url = "https://" + document.querySelector('[name="subdomain"]').value + ".pagerduty.com/api/v1/users";
 
             var xmlhttp = new XMLHttpRequest();
 
@@ -30,17 +30,16 @@
                 }
             };
 
-            xmlhttp.open("GET", url, true);
+            xmlhttp.open("GET", "https://" + document.querySelector('[name="subdomain"]').value + ".pagerduty.com/api/v1/users", true);
             xmlhttp.setRequestHeader("Content-Type", "application/json");
             xmlhttp.setRequestHeader("Authorization", "Token token=" + document.querySelector('[name="token"]').value);
             xmlhttp.send();
         }
-
-
+        
+        // parse User JSON to CSV and put it in the textarea
         function UsersJSON2CSV(UsersJSON) {
             var UsersData = JSON.parse(UsersJSON).users;
             var CSV = "";
-
             var headrow = "";
 
             for (var index in UsersData[0]) {
@@ -60,9 +59,9 @@
             }
 
             document.getElementById("CSVtextarea").value = CSV;
-
         }
-
+        
+        // download the textarea with the Users CSV
         function saveTextAsFile() {
             var textToWrite = document.getElementById("CSVtextarea").value
             var textFileAsBlob = new Blob([textToWrite], {
@@ -74,12 +73,8 @@
             downloadLink.download = fileNameToSaveAs;
             downloadLink.innerHTML = "Download File";
             if (window.webkitURL != null) {
-                // Chrome allows the link to be clicked
-                // without actually adding it to the DOM.
                 downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
             } else {
-                // Firefox requires the link to be added to the DOM
-                // before it can be clicked.
                 downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
                 downloadLink.onclick = destroyClickedElement;
                 downloadLink.style.display = "none";

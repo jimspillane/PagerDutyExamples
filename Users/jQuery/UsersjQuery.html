@@ -23,6 +23,8 @@
         <button type="button" onclick="saveTextAsFile()">Download</button>
     </div>
     <script>
+        
+        // Handle onlclick and get Users 
         function exportToCSV() {
             var settings = {
                 "url": "https://" + document.querySelector('[name="subdomain"]').value + ".pagerduty.com/api/v1/users",
@@ -34,11 +36,15 @@
                 }
             };
             
+            // Get the Users with jQuery
+            // Parse the reponse to CSV using Papa Parse(http://papaparse.com/)
+            // put the result in the text area
             $.ajax(settings).done(function (response) {
                 document.getElementById("CSVtextarea").value = Papa.unparse(response.users);
             });
         }
         
+        // download the textarea with the Users CSV        
         function saveTextAsFile() {
             var textToWrite = document.getElementById("CSVtextarea").value
             var textFileAsBlob = new Blob([textToWrite], {
@@ -50,12 +56,8 @@
             downloadLink.download = fileNameToSaveAs;
             downloadLink.innerHTML = "Download File";
             if (window.webkitURL != null) {
-                // Chrome allows the link to be clicked
-                // without actually adding it to the DOM.
                 downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
             } else {
-                // Firefox requires the link to be added to the DOM
-                // before it can be clicked.
                 downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
                 downloadLink.onclick = destroyClickedElement;
                 downloadLink.style.display = "none";

@@ -1,6 +1,8 @@
 var app = angular.module('app', ['ngAnimate', 'ngTouch', 'ui.grid', 'ui.grid.selection', 'ui.grid.exporter']);
 
 app.controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
+    
+    // set options for grid
     $scope.gridOptions = {
         columnDefs: [
             { field: 'id' },            
@@ -18,11 +20,11 @@ app.controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
         ],
         enableGridMenu: true,
         enableSelectAll: true,
-        exporterCsvFilename: 'myFile.csv',
+        exporterCsvFilename: 'Users.csv',
         exporterPdfDefaultStyle: { fontSize: 9 },
         exporterPdfTableStyle: { margin: [30, 30, 30, 30] },
         exporterPdfTableHeaderStyle: { fontSize: 10, bold: true, italics: true, color: 'red' },
-        exporterPdfHeader: { text: "My Header", style: 'headerStyle' },
+        exporterPdfHeader: { text: "Users", style: 'headerStyle' },
         exporterPdfFooter: function (currentPage, pageCount) {
             return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
         },
@@ -40,8 +42,9 @@ app.controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
         }
     };
 
+    // get users
     $scope.getUsers = function () {  
-
+        // call Pagerduty api and set the grid to the response 
         $http({
             method: 'GET',
             url: 'https://' + $scope.subDomain + '.pagerduty.com/api/v1/users',
@@ -51,7 +54,6 @@ app.controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
         }, function errorCallback(response) {
 
         });
-
     }
 
 }]);
