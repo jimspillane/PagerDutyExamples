@@ -48,7 +48,10 @@ app.controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
         $http({
             method: 'GET',
             url: 'https://' + $scope.subDomain + '.pagerduty.com/api/v1/users',
-            headers: { "Authorization": "Token token=" + $scope.apiKey }
+            headers: {
+                "Authorization": "Token token=" + $scope.apiKey,
+                "Accept": "application/vnd.pagerduty+json;version=1.1"
+                }
         }).then(function successCallback(response) {
             $scope.gridOptions.data = response.data.users;
         }, function errorCallback(response) {

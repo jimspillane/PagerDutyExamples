@@ -30,7 +30,7 @@
                 "url": "https://" + document.querySelector('[name="subdomain"]').value + ".pagerduty.com/api/v1/users",
                 "method": "GET",
                 "headers": {
-                    "accept": "application/json",
+                    "accept": "application/vnd.pagerduty+json;version=1.1",
                     "content-type": "application/json",
                     "Authorization": "Token token=" + document.querySelector('[name="token"]').value 
                 }
