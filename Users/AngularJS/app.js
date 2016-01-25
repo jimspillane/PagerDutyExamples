@@ -2,7 +2,7 @@ var app = angular.module('app', ['ngAnimate', 'ngTouch', 'ui.grid', 'ui.grid.sel
 
 app.controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
     
-    // set options for grid
+    // set options for Angular UI Grid(http://ui-grid.info/)
     $scope.gridOptions = {
         columnDefs: [
             { field: 'id' },            
