@@ -3,25 +3,14 @@
 
 <head>
     <style>
-        .axis path,
-        .axis line {
-            fill: none;
-            stroke: #eee;
-            shape-rendering: crispEdges;
+        #graph-wrapper {
+            width: 115%;
+            padding: 10px;
+            background-color: rgba(20, 20, 20, 0.2);
         }
         
-        .axis text {
-            font-family: sans-serif;
-            font-size: 11px;
-        }
-        
-        .loading {
-            font-family: sans-serif;
-            font-size: 15px;
-        }
-        
-        .circle {
-            fill: #222;
+        .hover-circle:hover {
+            fill: grey;
         }
     </style>
 
@@ -32,11 +21,8 @@
 </head>
 
 <body>
-    <div>
-        <h1>PagerDuty Users CSV</h1>
-    </div>
-    <div>
-        <div id="punchcard"></div>
+    <div id="graph-wrapper">
+        <div id="graph"></div>
     </div>
     <script>
         function getParameterByName(name) {
@@ -49,7 +35,9 @@
         // Handle onlclick and get Users 
         function getData(apikey, subdomain) {
 
-            var pdURL = "https://" + subdomain + ".pagerduty.com/api/v1/reports/raw/incidents.csv?" +
+
+// + subdomain +
+            var pdURL = "https://" + "webdemo" + ".pagerduty.com/api/v1/reports/raw/incidents.csv?" +
                 "since=" + moment().startOf('day').add(-141, 'days').format() + "&" +
                 "until=" + moment().startOf('day').add(-1, 'days').format() + "&filters%5Burgency%5D=high%2Clow";
 
@@ -73,90 +61,129 @@
             });
         }
 
-        function createChart(data) {
-            console.log(data);
+        function createChart(incidentdata) {
+            //console.log(data);
             
-            var w = 940,
-                h = 300,
-                pad = 20,
-                left_pad = 100,
-                Data_url = '/data.json';
-
-            var svg = d3.select("#punchcard")
-                .append("svg")
-                .attr("width", w)
-                .attr("height", h);
-
-            var x = d3.scale.linear().domain([0, 23]).range([left_pad, w - pad]),
-                y = d3.scale.linear().domain([0, 6]).range([pad, h - pad * 2]);
-
-            var xAxis = d3.svg.axis().scale(x).orient("bottom")
-                .ticks(24)
-                .tickFormat(function(d, i) {
-                    var m = (d & gt; 12) ? "p" : "a";
-                    return (d % 12 == 0) ? 12 + m : d % 12 + m;
-                }),
-                yAxis = d3.svg.axis().scale(y).orient("left")
-                .ticks(7)
-                .tickFormat(function(d, i) {
-                    return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][d];
-                });
-
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", "translate(0, " + (h - pad) + ")")
-                .call(xAxis);
-
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", "translate(" + (left_pad - pad) + ", 0)")
-                .call(yAxis);
-
-            svg.append("text")
-                .attr("class", "loading")
-                .text("Loading ...")
-                .attr("x", function() {
-                    return w / 2;
-                })
-                .attr("y", function() {
-                    return h / 2 - 5;
-                });
-
-            d3.json(Data_url, function(punchcard_data) {
-                var max_r = d3.max(punchcard_data.map(
-                        function(d) {
-                            return d[2];
-                        })),
-                    r = d3.scale.linear()
-                    .domain([0, d3.max(punchcard_data, function(d) {
-                        return d[2];
-                    })])
-                    .range([0, 12]);
-
-                svg.selectAll(".loading").remove();
-
-                svg.selectAll("circle")
-                    .data(punchcard_data)
-                    .enter()
-                    .append("circle")
-                    .attr("class", "circle")
-                    .attr("cx", function(d) {
-                        return x(d[1]);
-                    })
-                    .attr("cy", function(d) {
-                        return y(d[0]);
-                    })
-                    .transition()
-                    .duration(800)
-                    .attr("r", function(d) {
-                        return r(d[2]);
-                    });
+            var data = 
+            [[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[0,5,0],[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0],[0,13,0],[0,14,0],[0,15,0],[0,16,0],[0,17,0],[0,18,0],[0,19,0],[0,20,0],[0,21,0],[0,22,0],[0,23,0],
+            [1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[1,5,0],[1,6,0],[1,7,0],[1,8,0],[1,9,0],[1,10,0],[1,11,0],[1,12,0],[1,13,0],[1,14,0],[1,15,0],[1,16,0],[1,17,0],[1,18,0],[1,19,0],[1,20,0],[1,21,0],[1,22,0],[1,23,0],
+            [2,0,0],[2,1,0],[2,2,0],[2,3,0],[2,4,0],[2,5,0],[2,6,0],[2,7,0],[2,8,0],[2,9,0],[2,10,0],[2,11,0],[2,12,0],[2,13,0],[2,14,0],[2,15,0],[2,16,0],[2,17,0],[2,18,0],[2,19,0],[2,20,0],[2,21,0],[2,22,0],[2,23,0],
+            [3,0,0],[3,1,0],[3,2,0],[3,3,0],[3,4,0],[3,5,0],[3,6,0],[3,7,0],[3,8,0],[3,9,0],[3,10,0],[3,11,0],[3,12,0],[3,13,0],[3,14,0],[3,15,0],[3,16,0],[3,17,0],[3,18,0],[3,19,0],[3,20,0],[3,21,0],[3,22,0],[3,23,0],
+            [4,0,0],[4,1,0],[4,2,0],[4,3,0],[4,4,0],[4,5,0],[4,6,0],[4,7,0],[4,8,0],[4,9,0],[4,10,0],[4,11,0],[4,12,0],[4,13,0],[4,14,0],[4,15,0],[4,16,0],[4,17,0],[4,18,0],[4,19,0],[4,20,0],[4,21,0],[4,22,0],[4,23,0],
+            [5,0,0],[5,1,0],[5,2,0],[5,3,0],[5,4,0],[5,5,0],[5,6,0],[5,7,0],[5,8,0],[5,9,0],[5,10,0],[5,11,0],[5,12,0],[5,13,0],[5,14,0],[5,15,0],[5,16,0],[5,17,0],[5,18,0],[5,19,0],[5,20,0],[5,21,0],[5,22,0],[5,23,0],
+            [6,0,0],[6,1,0],[6,2,0],[6,3,0],[6,4,0],[6,5,0],[6,6,0],[6,7,0],[6,8,0],[6,9,0],[6,10,0],[6,11,0],[6,12,0],[6,13,0],[6,14,0],[6,15,0],[6,16,0],[6,17,0],[6,18,0],[6,19,0],[6,20,0],[6,21,0],[6,22,0],[6,23,0]];
+            
+            
+            incidentdata.data.forEach(function(incident) {
+                if (incident.hasOwnProperty('created_on')) {
+                    data[(+moment(incident.created_on).format("d") * 23) + +moment(incident.created_on).format("H")][2]++;
+                }
             });
+            
+            var fullWidth = document.getElementById('graph').offsetWidth;
+var graphPadding = 80;
+var width = (fullWidth-graphPadding);
+var fullHeight = 380;
+var height = (fullHeight-30);
+var days = [
+  "Sunday", "Monday", "Tuesday", "Wednesday",
+  "Thursday", "Friday", "Saturday"
+];
+var hours = [
+  "12am", "1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am",
+  "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm",
+  "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"
+];
 
+
+var palette = d3.select("#graph").append("svg").
+  attr("width", fullWidth).
+  attr("height", fullHeight);
+
+var dayGroup = palette.append("g");
+var hourGroup = palette.append("g");
+var circleGroup = palette.append("g");
+
+ x = {
+      min:  0,
+      max:  width
+    }
+    x.step = x.max/24;
+
+    y = {
+      min:  0,
+      max:  height
+    }
+    y.step = y.max/7;
+
+  var dayText = dayGroup.selectAll("text")
+                          .data(days)
+                          .enter()
+                          .append("text");
+  var dayLabels = dayText
+                   .attr("x", 0)
+                   .attr("y", function(d) { return y.step*(days.indexOf(d)+1); })
+                   .text(function (d) { return d; })
+                   .attr("font-family", "sans-serif")
+                   .attr("font-size", "12px");
+
+  var hourText = hourGroup.selectAll("text")
+                          .data(hours)
+                          .enter()
+                          .append("text");
+  var hourLabels = hourText
+                   .attr("x", function(d) {
+                     return x.step*(hours.indexOf(d)+1)+32;
+                   })
+                   .attr("y", y.max+20)
+                   .text(function (d) { return d; })
+                   .attr("font-family", "sans-serif")
+                   .attr("font-size", "12px");
+
+
+  var scaleData = [];
+
+  for (i in data){
+    scaleData.push(data[i][2])
+  }
+
+  z = {
+    data: scaleData
+  }
+  z.max    = d3.max(z.data)
+  z.min    = d3.min(z.data)
+  z.domain = [z.min, z.max]
+  z.range  = [4, 15]
+  z.scale  = d3.scale.linear().
+  domain(z.domain).
+  range(z.range);
+
+  for (var i in data) {
+    tuple = data[i];
+    commits = tuple[2];
+    if (commits > 0) {
+      cy    = y.step*(tuple[0]+1);
+      cx    = x.step*(tuple[1]+1)+50;
+      r     = z.scale(commits);
+      title = "Commits: " + commits;
+
+      c = circleGroup.append("circle")
+        .attr("cx",cx)
+        .attr("cy",cy)
+        .attr("r",r)
+        .attr("title",title)
+        .attr("class","hover-circle");
+
+      }
+    }
+
+  
 
         }
-
+    
+$(document).ready(function(){
         getData(getParameterByName('apikey'), getParameterByName('subdomain'));
+});
     </script>
 </body>
 
